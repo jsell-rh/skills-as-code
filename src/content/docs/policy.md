@@ -18,24 +18,17 @@ It answers four questions:
 # /org/skills/sdlc/skill.yaml
 spec:
   contract:
-    requiredOverrides:
-      - /spec/inputs/jiraProjectKey/value
     requiredBlocks:
+      - jira-project-context
       - team-implementation-guidelines
       - repo-context
     lockedBlocks:
       - security-review
     allowedPatchPaths:
-      - /spec/inputs/jiraProjectKey/value
+      - /spec/blocks/jira-project-context
       - /spec/blocks/team-implementation-guidelines
       - /spec/blocks/repo-context
 ```
-
-## Required Overrides
-
-`requiredOverrides` are fields that cannot keep the organization placeholder value.
-
-In the SDLC example, the organization cannot know every team's Jira project key. The team must provide it.
 
 ## Required Blocks
 
@@ -43,8 +36,11 @@ In the SDLC example, the organization cannot know every team's Jira project key.
 
 In the SDLC example:
 
+- The team adds Jira project context.
 - The team adds implementation guidance.
 - The repository adds local ownership and verification context.
+
+There is no sentinel value and no template expression. Jira project selection is ordinary prose in an addressable block.
 
 ## Locked Blocks
 

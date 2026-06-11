@@ -5,20 +5,15 @@ metadata:
 spec:
   description: Enterprise SDLC skill for Jira-driven code changes.
   target: SKILL.md
-  inputs:
-    jiraProjectKey:
-      value: "__REQUIRED__"
-      description: Jira project key used by the Jira skill.
   contract:
-    requiredOverrides:
-      - /spec/inputs/jiraProjectKey/value
     requiredBlocks:
+      - jira-project-context
       - team-implementation-guidelines
       - repo-context
     lockedBlocks:
       - security-review
     allowedPatchPaths:
-      - /spec/inputs/jiraProjectKey/value
+      - /spec/blocks/jira-project-context
       - /spec/blocks/team-implementation-guidelines
       - /spec/blocks/repo-context
   blocks:
@@ -27,9 +22,9 @@ spec:
       markdown: |
         ## Read The Jira Issue
 
-        Use the Jira skill to read the assigned issue from project `{{ inputs.jiraProjectKey.value }}`.
+        Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
     implementation-scaffold:
-      order: 20
+      order: 30
       markdown: |
         ## Implement
 

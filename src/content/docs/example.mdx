@@ -33,7 +33,7 @@ This example shows the minimum structure a team needs.
 
 ## 1. Organization
 
-The organization owns the generic SDLC skill. It defines the three durable sections: read the Jira issue, implement, and perform security review.
+The organization owns the generic SDLC skill. It defines the durable prose for Jira intake, implementation, and security review. It also requires downstream overlays to add a Jira project context block.
 
 ```yaml
 # /org/skills/sdlc/skill.yaml
@@ -44,20 +44,15 @@ metadata:
 spec:
   description: Enterprise SDLC skill for Jira-driven code changes.
   target: SKILL.md
-  inputs:
-    jiraProjectKey:
-      value: "__REQUIRED__"
-      description: Jira project key used by the Jira skill.
   contract:
-    requiredOverrides:
-      - /spec/inputs/jiraProjectKey/value
     requiredBlocks:
+      - jira-project-context
       - team-implementation-guidelines
       - repo-context
     lockedBlocks:
       - security-review
     allowedPatchPaths:
-      - /spec/inputs/jiraProjectKey/value
+      - /spec/blocks/jira-project-context
       - /spec/blocks/team-implementation-guidelines
       - /spec/blocks/repo-context
   blocks:
@@ -66,9 +61,9 @@ spec:
       markdown: |
         ## Read The Jira Issue
 
-        Use the Jira skill to read the assigned issue from project `{{ inputs.jiraProjectKey.value }}`.
+        Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
     implementation-scaffold:
-      order: 20
+      order: 30
       markdown: |
         ## Implement
 
@@ -83,14 +78,14 @@ spec:
 
 The organization contract says:
 
-- `jiraProjectKey` must be overridden downstream.
+- `jira-project-context` must be added.
 - `team-implementation-guidelines` must be added.
 - `repo-context` must be added.
 - `security-review` cannot be patched downstream.
 
 ## 2. Team
 
-The payments team selects the Jira project and adds team implementation guidance.
+The payments team adds the required Jira project context and team implementation guidance.
 
 ```yaml
 # /teams/payments/skills/sdlc/kustomization.yaml
@@ -108,13 +103,18 @@ patches:
 
 ```yaml
 # /teams/payments/skills/sdlc/patch.yaml
-- op: replace
-  path: /spec/inputs/jiraProjectKey/value
-  value: PAY
+- op: add
+  path: /spec/blocks/jira-project-context
+  value:
+    order: 20
+    markdown: |
+      ## Jira Project Context
+
+      Use Jira project `PAY`.
 - op: add
   path: /spec/blocks/team-implementation-guidelines
   value:
-    order: 30
+    order: 40
     markdown: |
       ## Payments Team Guidelines
 
@@ -144,7 +144,7 @@ patches:
 - op: add
   path: /spec/blocks/repo-context
   value:
-    order: 40
+    order: 50
     markdown: |
       ## Repository Context
 
@@ -153,7 +153,7 @@ patches:
 
 ## Compiled Skill
 
-The CLI resolves the overlays, verifies the contract, sorts blocks by `order`, renders input references, and writes the skill the agent will load.
+The CLI resolves the overlays, verifies the contract, sorts blocks by `order`, and writes the skill the agent will load.
 
 ```md
 # /repos/payments-api/.agents/skills/sdlc/SKILL.md
@@ -166,7 +166,11 @@ description: Enterprise SDLC skill for Jira-driven code changes.
 
 ## Read The Jira Issue
 
-Use the Jira skill to read the assigned issue from project `PAY`.
+Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
+
+## Jira Project Context
+
+Use Jira project `PAY`.
 
 ## Implement
 

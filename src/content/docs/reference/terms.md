@@ -27,10 +27,6 @@ An addressable Markdown section in the source skill.
 
 A block that downstream overlays cannot change.
 
-## Required Override
-
-A field that downstream overlays must replace before compilation.
-
 ## Required Block
 
 A block that downstream overlays must add before compilation.

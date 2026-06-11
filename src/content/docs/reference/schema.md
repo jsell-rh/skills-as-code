@@ -14,13 +14,7 @@ metadata:
 spec:
   description: string
   target: SKILL.md
-  inputs:
-    key:
-      value: string
-      description: string
   contract:
-    requiredOverrides:
-      - string
     requiredBlocks:
       - string
     lockedBlocks:
@@ -35,7 +29,6 @@ spec:
 
 ## Notes
 
-- `inputs` are values the compiler can render into Markdown.
 - `blocks` are addressable Markdown sections.
 - `order` controls output order.
 - `contract` controls what downstream overlays must provide and cannot change.

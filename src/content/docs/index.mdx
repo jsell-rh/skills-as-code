@@ -35,7 +35,7 @@ Three levels are enough for the minimum viable enterprise story:
     Owns the base SDLC skill, the Jira intake pattern, the implementation scaffold, and the locked security review.
   </Card>
   <Card title="2. Team">
-    Selects the Jira project and adds team implementation guidance.
+    Adds the required Jira project context and team implementation guidance.
   </Card>
   <Card title="3. Repository">
     Adds repository-specific ownership and local operating context.
@@ -57,34 +57,35 @@ metadata:
   name: enterprise-sdlc
 spec:
   target: SKILL.md
-  inputs:
-    jiraProjectKey:
-      value: "__REQUIRED__"
   contract:
-    requiredOverrides:
-      - /spec/inputs/jiraProjectKey/value
     requiredBlocks:
+      - jira-project-context
       - team-implementation-guidelines
       - repo-context
     lockedBlocks:
       - security-review
     allowedPatchPaths:
-      - /spec/inputs/jiraProjectKey/value
+      - /spec/blocks/jira-project-context
       - /spec/blocks/team-implementation-guidelines
       - /spec/blocks/repo-context
 ```
 
-The team selects its Jira project and adds implementation guidance:
+The team selects its Jira project using prose and adds implementation guidance:
 
 ```yaml
 # /teams/payments/skills/sdlc/patch.yaml
-- op: replace
-  path: /spec/inputs/jiraProjectKey/value
-  value: PAY
+- op: add
+  path: /spec/blocks/jira-project-context
+  value:
+    order: 20
+    markdown: |
+      ## Jira Project Context
+
+      Use Jira project `PAY`.
 - op: add
   path: /spec/blocks/team-implementation-guidelines
   value:
-    order: 30
+    order: 40
     markdown: |
       ## Payments Team Guidelines
 
@@ -98,7 +99,7 @@ The repository adds local context:
 - op: add
   path: /spec/blocks/repo-context
   value:
-    order: 40
+    order: 50
     markdown: |
       ## Repository Context
 
@@ -118,7 +119,11 @@ description: Enterprise SDLC skill for Jira-driven code changes.
 
 ## Read The Jira Issue
 
-Use the Jira skill to read the assigned issue from project `PAY`.
+Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
+
+## Jira Project Context
+
+Use Jira project `PAY`.
 
 ## Implement
 
@@ -139,7 +144,7 @@ Review the diff for authentication, authorization, injection, secret exposure, a
 
 ## What Matters
 
-- The organization can require Jira project selection without hard-coding every team.
+- The organization can require Jira project context without hard-coding every team.
 - The team can add guidance without forking the organization skill.
 - The repository can add local context without weakening team or organization rules.
 - The security review block is inherited by every downstream skill and cannot be changed outside the organization layer.

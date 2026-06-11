@@ -7,7 +7,11 @@ description: Enterprise SDLC skill for Jira-driven code changes.
 
 ## Read The Jira Issue
 
-Use the Jira skill to read the assigned issue from project `PAY`.
+Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
+
+## Jira Project Context
+
+Use Jira project `PAY`.
 
 ## Implement
 
