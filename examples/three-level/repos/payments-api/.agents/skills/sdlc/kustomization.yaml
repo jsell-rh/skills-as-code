@@ -1,10 +1,8 @@
 resources:
-  - ../../base
-
-namePrefix: payments-
+  - ../../../../../teams/payments/skills/sdlc
 
 patches:
-  - path: patch-test-command.yaml
+  - path: patch.yaml
     target:
       group: skills.agent.dev
       version: v1alpha1

@@ -1,0 +1,188 @@
+---
+title: Three-Level Example
+description: Organization, team, and repository overlays for a generic SDLC skill.
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+This example shows the minimum structure a team needs.
+
+<FileTree>
+
+- org/
+  - skills/
+    - sdlc/
+      - kustomization.yaml
+      - skill.yaml
+- teams/
+  - payments/
+    - skills/
+      - sdlc/
+        - kustomization.yaml
+        - patch.yaml
+- repos/
+  - payments-api/
+    - .agents/
+      - skills/
+        - sdlc/
+          - kustomization.yaml
+          - patch.yaml
+          - SKILL.md
+
+</FileTree>
+
+## 1. Organization
+
+The organization owns the generic SDLC skill. It defines the three durable sections: read the Jira issue, implement, and perform security review.
+
+```yaml
+# /org/skills/sdlc/skill.yaml
+apiVersion: skills.agent.dev/v1alpha1
+kind: Skill
+metadata:
+  name: enterprise-sdlc
+spec:
+  description: Enterprise SDLC skill for Jira-driven code changes.
+  target: SKILL.md
+  inputs:
+    jiraProjectKey:
+      value: "__REQUIRED__"
+      description: Jira project key used by the Jira skill.
+  contract:
+    requiredOverrides:
+      - /spec/inputs/jiraProjectKey/value
+    requiredBlocks:
+      - team-implementation-guidelines
+      - repo-context
+    lockedBlocks:
+      - security-review
+    allowedPatchPaths:
+      - /spec/inputs/jiraProjectKey/value
+      - /spec/blocks/team-implementation-guidelines
+      - /spec/blocks/repo-context
+  blocks:
+    jira-intake:
+      order: 10
+      markdown: |
+        ## Read The Jira Issue
+
+        Use the Jira skill to read the assigned issue from project `{{ inputs.jiraProjectKey.value }}`.
+    implementation-scaffold:
+      order: 20
+      markdown: |
+        ## Implement
+
+        Use the issue acceptance criteria as the source of truth. Keep changes narrow.
+    security-review:
+      order: 90
+      markdown: |
+        ## Security Review
+
+        Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.
+```
+
+The organization contract says:
+
+- `jiraProjectKey` must be overridden downstream.
+- `team-implementation-guidelines` must be added.
+- `repo-context` must be added.
+- `security-review` cannot be patched downstream.
+
+## 2. Team
+
+The payments team selects the Jira project and adds team implementation guidance.
+
+```yaml
+# /teams/payments/skills/sdlc/kustomization.yaml
+resources:
+  - ../../../org/skills/sdlc
+
+patches:
+  - path: patch.yaml
+    target:
+      group: skills.agent.dev
+      version: v1alpha1
+      kind: Skill
+      name: enterprise-sdlc
+```
+
+```yaml
+# /teams/payments/skills/sdlc/patch.yaml
+- op: replace
+  path: /spec/inputs/jiraProjectKey/value
+  value: PAY
+- op: add
+  path: /spec/blocks/team-implementation-guidelines
+  value:
+    order: 30
+    markdown: |
+      ## Payments Team Guidelines
+
+      Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
+```
+
+## 3. Repository
+
+The repository consumes the team overlay and adds local context.
+
+```yaml
+# /repos/payments-api/.agents/skills/sdlc/kustomization.yaml
+resources:
+  - ../../../../../teams/payments/skills/sdlc
+
+patches:
+  - path: patch.yaml
+    target:
+      group: skills.agent.dev
+      version: v1alpha1
+      kind: Skill
+      name: enterprise-sdlc
+```
+
+```yaml
+# /repos/payments-api/.agents/skills/sdlc/patch.yaml
+- op: add
+  path: /spec/blocks/repo-context
+  value:
+    order: 40
+    markdown: |
+      ## Repository Context
+
+      Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response. Payment authorization code lives in `src/authz/`.
+```
+
+## Compiled Skill
+
+The CLI resolves the overlays, verifies the contract, sorts blocks by `order`, renders input references, and writes the skill the agent will load.
+
+```md
+# /repos/payments-api/.agents/skills/sdlc/SKILL.md
+---
+name: enterprise-sdlc
+description: Enterprise SDLC skill for Jira-driven code changes.
+---
+
+# Enterprise SDLC
+
+## Read The Jira Issue
+
+Use the Jira skill to read the assigned issue from project `PAY`.
+
+## Implement
+
+Use the issue acceptance criteria as the source of truth. Keep changes narrow.
+
+## Payments Team Guidelines
+
+Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
+
+## Repository Context
+
+Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response. Payment authorization code lives in `src/authz/`.
+
+## Security Review
+
+Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.
+```
+
+The important point is not the compiler command. The important point is the contract: team and repository overlays can add required local guidance, but they cannot change the organization-owned security review.

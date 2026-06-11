@@ -12,20 +12,12 @@ export default defineConfig({
       customCss: ['./src/styles/site.css'],
       sidebar: [
         { label: 'Overview', link: '/' },
-        { label: 'Quickstart', slug: 'quickstart' },
-        {
-          label: 'Design',
-          items: [
-            { label: 'System Model', slug: 'architecture' },
-            { label: 'Enterprise Controls', slug: 'enterprise-controls' },
-            { label: 'Threat Model', slug: 'threat-model' },
-          ],
-        },
+        { label: 'Three-Level Example', slug: 'example' },
+        { label: 'Policy Model', slug: 'policy' },
         {
           label: 'Reference',
           items: [
-            { label: 'Schema', slug: 'reference/schema' },
-            { label: 'AIBOM', slug: 'reference/aibom' },
+            { label: 'Resource Shape', slug: 'reference/schema' },
             { label: 'Terms', slug: 'reference/terms' },
           ],
         },

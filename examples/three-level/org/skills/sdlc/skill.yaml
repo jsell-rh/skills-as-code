@@ -1,0 +1,42 @@
+apiVersion: skills.agent.dev/v1alpha1
+kind: Skill
+metadata:
+  name: enterprise-sdlc
+spec:
+  description: Enterprise SDLC skill for Jira-driven code changes.
+  target: SKILL.md
+  inputs:
+    jiraProjectKey:
+      value: "__REQUIRED__"
+      description: Jira project key used by the Jira skill.
+  contract:
+    requiredOverrides:
+      - /spec/inputs/jiraProjectKey/value
+    requiredBlocks:
+      - team-implementation-guidelines
+      - repo-context
+    lockedBlocks:
+      - security-review
+    allowedPatchPaths:
+      - /spec/inputs/jiraProjectKey/value
+      - /spec/blocks/team-implementation-guidelines
+      - /spec/blocks/repo-context
+  blocks:
+    jira-intake:
+      order: 10
+      markdown: |
+        ## Read The Jira Issue
+
+        Use the Jira skill to read the assigned issue from project `{{ inputs.jiraProjectKey.value }}`.
+    implementation-scaffold:
+      order: 20
+      markdown: |
+        ## Implement
+
+        Use the issue acceptance criteria as the source of truth. Keep changes narrow.
+    security-review:
+      order: 90
+      markdown: |
+        ## Security Review
+
+        Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.

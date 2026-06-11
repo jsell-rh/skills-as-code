@@ -1,0 +1,11 @@
+- op: replace
+  path: /spec/inputs/jiraProjectKey/value
+  value: PAY
+- op: add
+  path: /spec/blocks/team-implementation-guidelines
+  value:
+    order: 30
+    markdown: |
+      ## Payments Team Guidelines
+
+      Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.

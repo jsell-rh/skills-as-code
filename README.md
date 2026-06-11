@@ -1,35 +1,38 @@
 # Skills as Code
 
-Build agent skills like production supply-chain artifacts.
+Declarative overlays for prose-based agent skills.
 
-Skills as Code is a documentation and specification draft for enterprise-grade agent skill governance. It proposes a simple path:
+Skills as Code is a documentation and specification draft for managing today’s `SKILL.md` prose across organization, team, and repository levels. It proposes a simple path:
 
 ```text
-structured skill source -> Kustomize overlay -> policy verification -> compiled SKILL.md -> AIBOM
+# /README.md
+organization base -> team overlay -> repository overlay -> compiled SKILL.md
 ```
 
-The pattern keeps compatibility with current flat skill formats while adding the missing enterprise layers: inheritance, review boundaries, policy gates, deterministic output, and run provenance.
+The pattern keeps compatibility with current flat skill formats while adding the missing enterprise layers: inheritance, review boundaries, locked organization-owned prose, and deterministic output.
 
 ## What Is Included
 
 - Starlight documentation site in `src/content/docs/`.
-- Minimal Kustomize-compatible example in `examples/minimal/`.
-- Base SDLC skill, payments overlay, policy resource, compiled skill sample, and AIBOM sample.
+- Three-level Kustomize-compatible example in `examples/three-level/`.
+- Organization SDLC skill, payments team overlay, repository overlay, and compiled skill sample.
 
 ## Commands
 
 ```bash
+# /scripts/verify-local.sh
 pnpm install --ignore-scripts
 pnpm run build
-kustomize build examples/minimal/overlays/payments
+kustomize build examples/three-level/repos/payments-api/.agents/skills/sdlc
 ```
 
 ## Development
 
 ```bash
+# /scripts/dev.sh
 pnpm run dev
 ```
 
 ## Project Status
 
-This is a rigorous concept draft, not a finished compiler or standard. The `skillc` commands shown in the docs describe the intended reference CLI contract.
+This is a concept draft, not a finished compiler or standard. The docs assume a CLI exists to resolve overlays, verify contracts, and emit `SKILL.md`.

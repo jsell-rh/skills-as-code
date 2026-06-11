@@ -1,261 +1,148 @@
 ---
 title: Skills as Code
-description: Declarative management for prose-based agent skills.
+description: Declarative overlays for prose-based agent skills.
 hero:
   title: Skills as Code
-  tagline: "Kustomize inheritance, policy verification, compiled SKILL.md output, and AIBOM provenance for the skills people already use today."
+  tagline: "Manage today’s SKILL.md prose with organization, team, and repository overlays."
   image:
     html: |
       <div class="hero-flow" aria-hidden="true">
-        <div class="flow-node flow-base"><span>base</span><strong>SKILL.md source</strong></div>
-        <div class="flow-node flow-overlay"><span>overlay</span><strong>prose patch</strong></div>
-        <div class="flow-node flow-check"><span>check</span><strong>policy pass</strong></div>
-        <div class="flow-node flow-output"><span>output</span><strong>SKILL.md + AIBOM</strong></div>
+        <div class="flow-node flow-base"><span>organization</span><strong>base SDLC skill</strong></div>
+        <div class="flow-node flow-overlay"><span>team</span><strong>project and guidelines</strong></div>
+        <div class="flow-node flow-check"><span>repository</span><strong>local context</strong></div>
+        <div class="flow-node flow-output"><span>output</span><strong>SKILL.md</strong></div>
       </div>
   actions:
-    - text: Read the quickstart
-      link: quickstart/
-    - text: Inspect the threat model
-      link: threat-model/
+    - text: See the example
+      link: example/
+    - text: Read the policy model
+      link: policy/
       variant: secondary
 ---
 
 import { Card, CardGrid, LinkButton } from '@astrojs/starlight/components';
 
-Agent skills are Markdown files. That is the starting point.
+Skills are Markdown files today. The first problem to solve is not a new skill runtime. It is how organizations manage shared skill prose without copy-paste drift.
 
-Those Markdown files are becoming supply-chain inputs. They steer tool use, shell commands, file edits, code review, and run reporting. A loose folder of prose can work for an individual developer. It does not give an enterprise enough control over inheritance, review, versioning, or provenance.
+**Skills as Code** treats `SKILL.md` as a compiled artifact. Teams author structured Markdown source, inherit it with Kustomize, and compile the resolved result back to ordinary `SKILL.md`.
 
-**Skills as Code** is a proposed open pattern for declaratively managing prose-based skills without requiring a new agent runtime.
+## The Shape
 
-<div class="statement-panel">
-  <p><strong>The core idea:</strong> treat <code>SKILL.md</code> as a compiled artifact. Author structured Markdown source, inherit it with Kustomize, verify the rendered result with policy, emit ordinary <code>SKILL.md</code>, and record the lineage in an AIBOM.</p>
-</div>
-
-## Why It Matters
-
-Current skill systems make authoring easy. Enterprises need control:
+Three levels are enough for the minimum viable enterprise story:
 
 <CardGrid>
-  <Card title="Inheritance without forks">
-    A platform team publishes base skill prose. Product teams overlay approved sections instead of copying and drifting.
+  <Card title="1. Organization">
+    Owns the base SDLC skill, the Jira intake pattern, the implementation scaffold, and the locked security review.
   </Card>
-  <Card title="Policy before runtime">
-    Locked prose blocks, command patterns, patch paths, and source refs are checked before an agent can load the rendered skill.
+  <Card title="2. Team">
+    Selects the Jira project and adds team implementation guidance.
   </Card>
-  <Card title="Current-agent compatibility">
-    The final output is a normal `SKILL.md`. The build path adds rigor; the agent still consumes prose.
+  <Card title="3. Repository">
+    Adds repository-specific ownership and local operating context.
   </Card>
-  <Card title="AIBOM by default">
-    Every run can report which skill, ancestor, overlay, digest, check, and compiled artifact influenced the work.
+  <Card title="Compiled Skill">
+    The agent still sees a normal `SKILL.md`.
   </Card>
 </CardGrid>
 
-## The Minimal Flow
+## The Example
 
-This is the whole pattern for a prose-based enterprise SDLC skill.
-
-```text
-# /README.md
-Markdown source -> Kustomize overlay -> policy check -> SKILL.md -> AIBOM
-```
-
-### Base
-
-The base is not a workflow DSL. It is a Kustomize-compatible YAML envelope around Markdown content.
-
-The envelope exists so teams can patch and verify prose structurally. The rendered output remains `SKILL.md`.
+The organization publishes a generic SDLC skill:
 
 ```yaml
-# /skills/sdlc/base/skill.yaml
+# /org/skills/sdlc/skill.yaml
 apiVersion: skills.agent.dev/v1alpha1
 kind: Skill
 metadata:
   name: enterprise-sdlc
 spec:
-  description: Enterprise SDLC guidance for agentic code changes.
   target: SKILL.md
+  inputs:
+    jiraProjectKey:
+      value: "__REQUIRED__"
   contract:
-    lockedBlocks: [security-review, run-record]
+    requiredOverrides:
+      - /spec/inputs/jiraProjectKey/value
+    requiredBlocks:
+      - team-implementation-guidelines
+      - repo-context
+    lockedBlocks:
+      - security-review
     allowedPatchPaths:
-      - /spec/blocks/2/markdown
-    allowedCommandPatterns:
-      - npm test
-      - make test-*
-  blocks:
-    - id: purpose
-      markdown: |
-        # Enterprise SDLC
-
-        Use this skill when making code changes in an enterprise repository.
-
-    - id: planning
-      markdown: |
-        ## Planning
-
-        Before editing files, write a short plan.
-
-    - id: testing
-      markdown: |
-        ## Testing
-
-        Run `npm test` after modifying code.
-
-    - id: security-review
-      markdown: |
-        ## Security Review
-
-        Review the diff for authentication, authorization, injection,
-        secret exposure, and sensitive data handling risks.
-
-    - id: run-record
-      markdown: |
-        ## Run Record
-
-        Record the activated skill name, digest, commands run,
-        files changed, verification result, and unresolved risks.
+      - /spec/inputs/jiraProjectKey/value
+      - /spec/blocks/team-implementation-guidelines
+      - /spec/blocks/repo-context
 ```
 
-### Overlay
-
-The team overlay is native Kustomize. It changes only the testing block.
+The team selects its Jira project and adds implementation guidance:
 
 ```yaml
-# /skills/sdlc/payments/kustomization.yaml
-resources:
-  - github.com/acme/agent-skills//sdlc/base?ref=2f4c6c0f93c5a2c39a6b8c3e5f4a1a8e9c7d6b50
-
-namePrefix: payments-
-
-patches:
-  - path: patch-testing.yaml
-    target:
-      group: skills.agent.dev
-      version: v1alpha1
-      kind: Skill
-      name: enterprise-sdlc
-```
-
-```yaml
-# /skills/sdlc/payments/patch-testing.yaml
+# /teams/payments/skills/sdlc/patch.yaml
 - op: replace
-  path: /spec/blocks/2/markdown
-  value: |
-    ## Testing
+  path: /spec/inputs/jiraProjectKey/value
+  value: PAY
+- op: add
+  path: /spec/blocks/team-implementation-guidelines
+  value:
+    order: 30
+    markdown: |
+      ## Payments Team Guidelines
 
-    Run `make test-payments` after modifying payment service code.
+      Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
 ```
 
-### Check
-
-Verification runs on the rendered Markdown source before compilation.
-
-```bash
-# /scripts/build-skill.sh
-kustomize build skills/sdlc/payments > build/rendered/payments-sdlc.yaml
-skillc verify --policy policies/enterprise-sdlc.yaml build/rendered/payments-sdlc.yaml
-skillc compile --out build/skills build/rendered/payments-sdlc.yaml
-```
-
-The verifier rejects illegal edits before the agent sees the skill.
+The repository adds local context:
 
 ```yaml
-# /policies/enterprise-sdlc.yaml
-apiVersion: skills.agent.dev/v1alpha1
-kind: SkillPolicy
-metadata:
-  name: enterprise-sdlc-policy
-spec:
-  requireImmutableRemoteRefs: true
-  requiredLockedBlocks: [security-review, run-record]
-  allowedMarkdownCommandPatterns: [npm test, make test-*]
-  denyMarkdownCommandPatterns: ["git push", "rm -rf"]
-  requireAibom: true
+# /repos/payments-api/.agents/skills/sdlc/patch.yaml
+- op: add
+  path: /spec/blocks/repo-context
+  value:
+    order: 40
+    markdown: |
+      ## Repository Context
+
+      Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response. Payment authorization code lives in `src/authz/`.
 ```
 
-### Output
-
-The compiled output is ordinary Markdown.
+The compiled result is plain Markdown:
 
 ```md
-<!-- /build/skills/payments-sdlc/SKILL.md -->
+# /repos/payments-api/.agents/skills/sdlc/SKILL.md
 ---
-name: payments-enterprise-sdlc
-description: Enterprise SDLC guidance for agentic code changes.
-metadata:
-  sourceDigest: sha256:8b1a...
-  resolvedFrom:
-    - enterprise-sdlc@sha256:4e2d...
-    - payments-overlay@sha256:91ac...
+name: enterprise-sdlc
+description: Enterprise SDLC skill for Jira-driven code changes.
 ---
 
 # Enterprise SDLC
 
-Use this skill when making code changes in an enterprise repository.
+## Read The Jira Issue
 
-## Testing
+Use the Jira skill to read the assigned issue from project `PAY`.
 
-Run `make test-payments` after modifying payment service code.
+## Implement
+
+Use the issue acceptance criteria as the source of truth. Keep changes narrow.
+
+## Payments Team Guidelines
+
+Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
+
+## Repository Context
+
+Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response. Payment authorization code lives in `src/authz/`.
+
+## Security Review
+
+Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks. This block is owned by the organization and cannot be changed by team or repository overlays.
 ```
 
-### AIBOM
+## What Matters
 
-The run record links the activated skill back to the base, overlay, compiled digest, and verification checks.
+- The organization can require Jira project selection without hard-coding every team.
+- The team can add guidance without forking the organization skill.
+- The repository can add local context without weakening team or organization rules.
+- The security review block is inherited by every downstream skill and cannot be changed outside the organization layer.
 
-```jsonc
-// /runs/PAY-1842/aibom.json
-{
-  "resolvedSkills": [
-    {
-      "name": "enterprise-sdlc",
-      "relationship": "base",
-      "digest": "sha256:4e2d..."
-    },
-    {
-      "name": "payments-enterprise-sdlc",
-      "relationship": "overlay",
-      "digest": "sha256:91ac..."
-    },
-    {
-      "name": "payments-enterprise-sdlc",
-      "relationship": "compiled-skill",
-      "digest": "sha256:8b1a..."
-    }
-  ],
-  "activatedSkills": [
-    {
-      "name": "payments-enterprise-sdlc",
-      "digest": "sha256:8b1a..."
-    }
-  ],
-  "checks": [
-    { "name": "enterprise-sdlc-policy", "result": "pass" }
-  ]
-}
-```
-
-<LinkButton href="quickstart/">Walk through the full example</LinkButton>
-<LinkButton href="architecture/" variant="secondary">Read the system model</LinkButton>
-
-## What This Is Not
-
-This is not another agent framework. It is not a workflow engine. It is not a new runtime semantics layer for skills.
-
-It is a supply-chain layer for the skill format teams already use: Markdown source, deterministic render, policy verification, compiled `SKILL.md`, and provenance.
-
-## Design Principles
-
-<CardGrid>
-  <Card title="Start with prose">
-    Skills are Markdown today. The first version should manage prose safely, not assume a future executor.
-  </Card>
-  <Card title="Boring by design">
-    Reuse Kustomize, JSON Patch, CI checks, digests, and BOM conventions.
-  </Card>
-  <Card title="Flat at the edge">
-    Agents consume compiled `SKILL.md`. Humans and automation review structured Markdown source.
-  </Card>
-  <Card title="Provenance is not optional">
-    A run that cannot identify its skill inputs, overlays, and checks is not production-grade.
-  </Card>
-</CardGrid>
+<LinkButton href="example/">Walk through the full example</LinkButton>
+<LinkButton href="policy/" variant="secondary">Read the policy model</LinkButton>

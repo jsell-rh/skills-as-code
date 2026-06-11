@@ -1,52 +1,40 @@
 ---
 title: Terms
-description: Canonical terminology used by this documentation.
+description: Canonical terminology used by this site.
 ---
 
 ## Skill
 
-A reusable Markdown-based instruction artifact that an agent can load.
+A Markdown instruction artifact loaded by an agent.
 
 ## Source Skill
 
-A structured, declarative source resource used to render a skill.
-
-## Compiled Skill
-
-A flat skill directory generated from source resources and loaded by an agent runtime.
+A structured YAML resource used to manage and render skill Markdown.
 
 ## Base
 
-A reusable Kustomize resource tree that defines common skill prose.
+The organization-owned source skill.
 
 ## Overlay
 
-A Kustomize customization that inherits from a base and applies local changes.
+A Kustomize customization that inherits a base and applies allowed patches.
 
-## Markdown Block
+## Block
 
-An addressable unit of Markdown prose in the source envelope.
+An addressable Markdown section in the source skill.
 
 ## Locked Block
 
-A Markdown block that overlays cannot remove or change.
+A block that downstream overlays cannot change.
 
-## Allowed Patch Path
+## Required Override
 
-A JSON Pointer path that enterprise policy permits overlays to modify.
+A field that downstream overlays must replace before compilation.
 
-## AIBOM
+## Required Block
 
-An AI Bill of Materials for an agent run. It records resolved skills, activated skills, ancestry, digests, policy checks, and runtime identity.
+A block that downstream overlays must add before compilation.
 
-## Resolver
+## Compiled Skill
 
-The component that fetches bases, overlays, and remote refs and produces a resolved source graph.
-
-## Compiler
-
-The component that turns verified source resources into flat agent-loadable skill artifacts.
-
-## Verifier
-
-The component that checks rendered source resources against schema and policy before compilation.
+The final `SKILL.md` loaded by the agent.

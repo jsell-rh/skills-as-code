@@ -1,0 +1,10 @@
+resources:
+  - ../../../../org/skills/sdlc
+
+patches:
+  - path: patch.yaml
+    target:
+      group: skills.agent.dev
+      version: v1alpha1
+      kind: Skill
+      name: enterprise-sdlc
