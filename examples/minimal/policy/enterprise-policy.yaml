@@ -1,0 +1,16 @@
+apiVersion: skills.agent.dev/v1alpha1
+kind: SkillPolicy
+metadata:
+  name: enterprise-sdlc-policy
+spec:
+  requireImmutableRemoteRefs: true
+  requiredLockedBlocks:
+    - security-review
+    - run-record
+  allowedMarkdownCommandPatterns:
+    - npm test
+    - make test-*
+  denyMarkdownCommandPatterns:
+    - git push
+    - rm -rf
+  requireAibom: true

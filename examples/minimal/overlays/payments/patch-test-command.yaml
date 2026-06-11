@@ -1,0 +1,6 @@
+- op: replace
+  path: /spec/blocks/2/markdown
+  value: |
+    ## Testing
+
+    Run `make test-payments` after modifying payment service code. Include the command and result in the final response.
