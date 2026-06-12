@@ -1,0 +1,14 @@
+compiler:
+  name: skills
+  version: 0.1.0
+skills:
+  enterprise-sdlc:
+    output: .claude/skills/sdlc/SKILL.md
+    outputDigest: sha256:example-output
+    sources:
+      - path: ../../org/skills/sdlc/SKILL.md
+        digest: sha256:example-org
+      - path: ../../teams/payments/skills/sdlc/SKILL.md
+        digest: sha256:example-team
+      - path: .skills-src/sdlc/SKILL.md
+        digest: sha256:example-repo

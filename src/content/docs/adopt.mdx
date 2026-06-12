@@ -1,0 +1,127 @@
+---
+title: Adopt In A Repo
+description: Expected workflow for adopting Markdown-first skill composition in a repository.
+---
+
+This page describes the expected workflow. The current repository is a documentation draft; it does not ship a working `skills` CLI yet.
+
+## 1. Add Source
+
+Create the repository-owned source skill. This file is edited by repository maintainers.
+
+```md
+# /repos/payments-api/.skills-src/sdlc/SKILL.md
+---
+name: enterprise-sdlc
+description: Payments API SDLC guidance.
+---
+
+## Repository Context
+
+Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response.
+```
+
+## 2. Declare Composition
+
+Declare the ordered sources and generated output.
+
+```yaml
+# /repos/payments-api/skills.yaml
+skills:
+  enterprise-sdlc:
+    sources:
+      - github.com/acme/skills/org/sdlc/SKILL.md@v1.2.0
+      - github.com/acme/skills/teams/payments/sdlc/SKILL.md@v0.8.0
+      - .skills-src/sdlc/SKILL.md
+    output: .claude/skills/sdlc/SKILL.md
+    report: .skills/reports/enterprise-sdlc.json
+    lock: skills.lock.yaml
+```
+
+Source order matters. Later sources may fill required sections and replace normal sections. Later sources may not replace final sections.
+
+## 3. Compile
+
+The expected CLI contract is intentionally small:
+
+```bash
+# /repos/payments-api
+skills compile --manifest skills.yaml
+skills verify --manifest skills.yaml --check
+skills report enterprise-sdlc --manifest skills.yaml
+```
+
+`compile` writes vendored output. `verify --check` exits non-zero if output is stale or invalid. `report` explains what happened during the merge.
+
+## 4. Review Output
+
+The generated skill is committed so every developer and agent sees the same Markdown.
+
+```md
+# /repos/payments-api/.claude/skills/sdlc/SKILL.md
+---
+name: enterprise-sdlc
+description: Payments API SDLC guidance.
+---
+
+# Enterprise SDLC
+```
+
+Do not edit `.claude/skills/**/SKILL.md` directly. Edit `.skills-src/**/SKILL.md`, run `skills compile`, and review the generated diff.
+
+## 5. Add CI
+
+CI should regenerate and fail if the vendored output or merge report is stale.
+
+```yaml
+# /repos/payments-api/.github/workflows/skills.yml
+name: Verify Skills
+
+on:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: skills compile --manifest skills.yaml
+      - run: skills verify --manifest skills.yaml --check
+      - run: git diff --exit-code .claude/skills .skills/reports
+```
+
+## 6. Fix Failures
+
+Common failures should be boring and actionable:
+
+```text
+# /repos/payments-api/.skills/errors/missing-required.txt
+error: enterprise-sdlc missing required section "Jira Project Context"
+source: /org/skills/sdlc/SKILL.md
+fix: add "## Jira Project Context" in a downstream source
+```
+
+```text
+# /repos/payments-api/.skills/errors/final-override.txt
+error: enterprise-sdlc cannot replace final section "Security Review"
+owner: /org/skills/sdlc/SKILL.md
+conflict: /repos/payments-api/.skills-src/sdlc/SKILL.md
+```
+
+```text
+# /repos/payments-api/.skills/errors/unknown-section.txt
+error: enterprise-sdlc contains unknown section "Skip Review Notes"
+fix: add the heading to allowedAppendSections or remove it
+```
+
+## Migration
+
+For an existing skill, start by moving the current file to `.skills-src/` and compiling it back to the agent path unchanged. Then introduce organization and team sources one at a time.
+
+```text
+# /repos/payments-api/migration.txt
+.claude/skills/sdlc/SKILL.md
+  -> .skills-src/sdlc/SKILL.md
+  -> skills compile
+  -> .claude/skills/sdlc/SKILL.md
+```

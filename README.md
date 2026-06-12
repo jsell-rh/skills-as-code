@@ -15,7 +15,7 @@ The pattern keeps compatibility with current flat skill formats while adding req
 
 - Starlight documentation site in `src/content/docs/`.
 - Markdown-first example in `examples/markdown-mvp/`.
-- Organization SDLC skill, payments team skill, repository skill, and vendored output sample.
+- Organization SDLC skill, payments team skill, repository skill, notional manifest, and vendored output sample.
 
 ## Commands
 
@@ -34,4 +34,4 @@ pnpm run dev
 
 ## Project Status
 
-This is a concept draft, not a finished compiler or standard. The docs assume a CLI exists to resolve Markdown sources, verify contracts, and emit clean `SKILL.md`.
+This is a concept draft, not a finished compiler or standard. The docs specify an expected CLI workflow for resolving Markdown sources, verifying contracts, and emitting clean `SKILL.md`; this repository does not implement that CLI yet.

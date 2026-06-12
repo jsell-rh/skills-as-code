@@ -1,0 +1,9 @@
+skills:
+  enterprise-sdlc:
+    sources:
+      - ../../org/skills/sdlc/SKILL.md
+      - ../../teams/payments/skills/sdlc/SKILL.md
+      - .skills-src/sdlc/SKILL.md
+    output: .claude/skills/sdlc/SKILL.md
+    report: .skills/reports/enterprise-sdlc.json
+    lock: skills.lock.yaml

@@ -12,12 +12,14 @@ export default defineConfig({
       customCss: ['./src/styles/site.css'],
       sidebar: [
         { label: 'Overview', link: '/' },
-        { label: 'Markdown MVP Example', slug: 'example' },
-        { label: 'Policy Model', slug: 'policy' },
+        { label: 'How It Works', slug: 'example' },
+        { label: 'Adopt In A Repo', slug: 'adopt' },
+        { label: 'Rules', slug: 'policy' },
+        { label: 'Enterprise Notes', slug: 'enterprise' },
         {
           label: 'Reference',
           items: [
-            { label: 'Markdown Contract', slug: 'reference/schema' },
+            { label: 'Markdown Format', slug: 'reference/schema' },
             { label: 'Terms', slug: 'reference/terms' },
           ],
         },

@@ -1,9 +1,9 @@
 ---
-title: Markdown Contract
-description: The Markdown-first contract shape used by the MVP example.
+title: Markdown Format
+description: The Markdown-first contract format used by the MVP example.
 ---
 
-The MVP source format is `SKILL.md`.
+The MVP source format is `SKILL.md` with ordinary YAML frontmatter.
 
 ```md
 # /org/skills/sdlc/SKILL.md
@@ -20,17 +20,40 @@ Normal prose may be inherited or replaced by a downstream section with the same 
 
 ## Required Section <!-- @required -->
 
-<!-- Downstream source must supply this section before final output. -->
+<!-- Downstream source must fill this section before final output. -->
 
 ## Final Section <!-- @final -->
 
 Downstream source cannot replace this section.
 ```
 
-## Notes
+## Frontmatter
 
-- The source file is valid Markdown with ordinary YAML frontmatter.
-- Section identity is normalized `##` heading text with annotations stripped.
-- Required sections create abstract-base behavior.
-- Final sections protect organization-owned prose.
-- The compiler emits clean `SKILL.md`.
+| Field | Rule |
+| --- | --- |
+| `name` | Required. All composed sources for one skill must use the same name. |
+| `description` | Optional. Later sources may replace it. |
+| Other fields | Allowed, but the compiler must define merge behavior before relying on them. |
+
+## Sections
+
+| Item | Rule |
+| --- | --- |
+| Boundary | A section starts at a `##` heading and ends before the next `##` heading. |
+| Nested headings | `###` and deeper headings belong to the current `##` section. |
+| Code fences | Headings inside fenced code blocks are ignored. |
+| Identity | Section identity is normalized `##` heading text with annotations stripped. |
+| Empty required section | Treated as unresolved unless completed by a later source. |
+| Unknown section | Rejected unless listed in `allowedAppendSections`. |
+
+## Normalization
+
+```text
+# /reference/heading-normalization.txt
+strip contract annotations
+trim leading and trailing whitespace
+collapse repeated internal whitespace
+compare exact normalized heading text
+```
+
+The compiler emits clean `SKILL.md`; annotations and placeholder comments do not reach the agent.

@@ -1,0 +1,31 @@
+{
+  "skill": "enterprise-sdlc",
+  "result": "pass",
+  "sections": [
+    {
+      "heading": "Read The Jira Issue",
+      "action": "kept",
+      "source": "../../org/skills/sdlc/SKILL.md"
+    },
+    {
+      "heading": "Jira Project Context",
+      "action": "filled-required",
+      "source": "../../teams/payments/skills/sdlc/SKILL.md"
+    },
+    {
+      "heading": "Team Implementation Guidelines",
+      "action": "filled-required",
+      "source": "../../teams/payments/skills/sdlc/SKILL.md"
+    },
+    {
+      "heading": "Repository Context",
+      "action": "filled-required",
+      "source": ".skills-src/sdlc/SKILL.md"
+    },
+    {
+      "heading": "Security Review",
+      "action": "kept-final",
+      "source": "../../org/skills/sdlc/SKILL.md"
+    }
+  ]
+}

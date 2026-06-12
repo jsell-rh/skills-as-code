@@ -14,7 +14,7 @@
   --sac-panel-bg-soft: #1d2128;
   --sac-shadow: rgba(0, 0, 0, 0.24);
   --sac-flow-base: #93b7ff;
-  --sac-flow-overlay: #d7b56d;
+  --sac-flow-team: #d7b56d;
   --sac-flow-check: #89c7a2;
   --sac-flow-output: #d99797;
 }
@@ -36,7 +36,7 @@
   --sac-panel-bg-soft: #f7f8fa;
   --sac-shadow: rgba(18, 20, 24, 0.08);
   --sac-flow-base: #345fb4;
-  --sac-flow-overlay: #8a6218;
+  --sac-flow-team: #8a6218;
   --sac-flow-check: #2f6f4e;
   --sac-flow-output: #9a4d4d;
 }
@@ -113,8 +113,8 @@
   --flow-accent: var(--sac-flow-base);
 }
 
-.flow-overlay {
-  --flow-accent: var(--sac-flow-overlay);
+.flow-team {
+  --flow-accent: var(--sac-flow-team);
 }
 
 .flow-check {

@@ -1,11 +1,20 @@
 ---
-title: Markdown MVP Example
+title: How It Works
 description: Organization, team, and repository skills authored as Markdown and compiled into vendored output.
 ---
 
 import { FileTree } from '@astrojs/starlight/components';
 
-This example uses Markdown as the source format. The compiler resolves the organization skill, applies the team and repository sections, verifies the contract, strips annotations, and writes vendored `SKILL.md`.
+Org marks `Jira Project Context` required. Team fills it with `PAY`. Repo adds local context. The vendored `SKILL.md` has no annotations or placeholder comments.
+
+## Flow
+
+```text
+# /README.md
+org SKILL.md -> team SKILL.md -> repo SKILL.md -> .claude/skills/sdlc/SKILL.md
+```
+
+## Files
 
 <FileTree>
 
@@ -20,9 +29,14 @@ This example uses Markdown as the source format. The compiler resolves the organ
         - SKILL.md
 - repos/
   - payments-api/
+    - skills.yaml
+    - skills.lock.yaml
     - .skills-src/
       - sdlc/
         - SKILL.md
+    - .skills/
+      - reports/
+        - enterprise-sdlc.json
     - .claude/
       - skills/
         - sdlc/
@@ -32,7 +46,7 @@ This example uses Markdown as the source format. The compiler resolves the organ
 
 ## 1. Organization
 
-The organization owns the base SDLC skill. It marks the Jira project context, team implementation guidance, and repository context as required. It marks the security review as final.
+The organization owns the base SDLC skill. It marks local sections as required and the security review as final.
 
 ```md
 # /org/skills/sdlc/SKILL.md
@@ -45,7 +59,7 @@ description: Enterprise SDLC skill for Jira-driven code changes.
 
 ## Read The Jira Issue
 
-Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
+Use Jira integration to read the assigned issue. The Jira project is declared in the Jira Project Context section.
 
 ## Jira Project Context <!-- @required -->
 
@@ -68,16 +82,9 @@ Use the issue acceptance criteria as the source of truth. Keep changes narrow.
 Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.
 ```
 
-The organization contract says:
-
-- `Jira Project Context` must be supplied before final output.
-- `Team Implementation Guidelines` must be supplied before final output.
-- `Repository Context` must be supplied before final output.
-- `Security Review` cannot be replaced downstream.
-
 ## 2. Team
 
-The payments team supplies the Jira project context and team implementation guidance. The heading text is the section identity.
+The payments team fills the Jira project context and team guidance.
 
 ```md
 # /teams/payments/skills/sdlc/SKILL.md
@@ -95,11 +102,22 @@ Use Jira project `PAY`.
 Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
 ```
 
-At this point the skill is still incomplete because the repository context is not present.
-
 ## 3. Repository
 
-The repository supplies local operating context.
+The repository declares source order and fills local context.
+
+```yaml
+# /repos/payments-api/skills.yaml
+skills:
+  enterprise-sdlc:
+    sources:
+      - ../../org/skills/sdlc/SKILL.md
+      - ../../teams/payments/skills/sdlc/SKILL.md
+      - .skills-src/sdlc/SKILL.md
+    output: .claude/skills/sdlc/SKILL.md
+    report: .skills/reports/enterprise-sdlc.json
+    lock: skills.lock.yaml
+```
 
 ```md
 # /repos/payments-api/.skills-src/sdlc/SKILL.md
@@ -115,7 +133,7 @@ Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidan
 
 ## Vendored Output
 
-The compiler strips annotations and comments, preserves organization-owned final prose, and writes clean Markdown for the agent.
+The vendored file is generated. Do not edit it directly.
 
 ```md
 # /repos/payments-api/.claude/skills/sdlc/SKILL.md
@@ -128,7 +146,7 @@ description: Payments API SDLC guidance.
 
 ## Read The Jira Issue
 
-Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
+Use Jira integration to read the assigned issue. The Jira project is declared in the Jira Project Context section.
 
 ## Jira Project Context
 
@@ -151,4 +169,4 @@ Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidan
 Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.
 ```
 
-The important point is the adoption curve: a team starts with Markdown, not a new resource format. The rigor comes from compiler checks around required sections, final sections, duplicate headings, and the generated merge report.
+The adoption point is narrow: a team starts with Markdown, adds a manifest, compiles to clean Markdown, and reviews the generated diff.
