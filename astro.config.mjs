@@ -10,17 +10,21 @@ export default defineConfig({
       description:
         'A rigorous enterprise pattern for versioned, verifiable agent skills.',
       customCss: ['./src/styles/site.css'],
+      components: {
+        ThemeProvider: './src/components/DarkThemeProvider.astro',
+        ThemeSelect: './src/components/DarkThemeSelect.astro',
+      },
       sidebar: [
         { label: 'Overview', link: '/' },
-        { label: 'How It Works', slug: 'example' },
-        { label: 'Adopt In A Repo', slug: 'adopt' },
-        { label: 'Rules', slug: 'policy' },
-        { label: 'Enterprise Notes', slug: 'enterprise' },
+        { label: 'How It Works', link: '/example/' },
+        { label: 'Adopt In A Repo', link: '/adopt/' },
+        { label: 'Rules', link: '/policy/' },
+        { label: 'Enterprise Notes', link: '/enterprise/' },
         {
           label: 'Reference',
           items: [
-            { label: 'Markdown Format', slug: 'reference/schema' },
-            { label: 'Terms', slug: 'reference/terms' },
+            { label: 'Markdown Format', link: '/reference/schema/' },
+            { label: 'Terms', link: '/reference/terms/' },
           ],
         },
       ],
