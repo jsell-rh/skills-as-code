@@ -24,7 +24,7 @@ conflict: /repos/payments-api/.skills-src/sdlc/SKILL.md
 
 ## Annotations
 
-The MVP uses two section annotations:
+The format uses two section annotations:
 
 ```md
 # /org/skills/sdlc/SKILL.md

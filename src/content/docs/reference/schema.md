@@ -1,9 +1,9 @@
 ---
 title: Markdown Format
-description: The Markdown-first contract format used by the MVP example.
+description: The Markdown-first contract format.
 ---
 
-The MVP source format is `SKILL.md` with ordinary YAML frontmatter.
+Source skills are `SKILL.md` files with ordinary YAML frontmatter.
 
 ```md
 # /org/skills/sdlc/SKILL.md

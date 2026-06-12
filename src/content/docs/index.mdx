@@ -18,10 +18,6 @@ Skills are Markdown files today. The lowest-friction enterprise pattern should n
 
 **Skills as Code** treats Markdown as the authoring format. A compiler reads ordinary `SKILL.md` files, verifies required and final sections, and vendors clean `SKILL.md` output for the agent.
 
-<div class="statement-panel">
-  <p><strong>MVP scope:</strong> plain <code>SKILL.md</code> only. No Kustomize, YAML resource schema, templates, AIBOM/run BOM, or build-script model in this version.</p>
-</div>
-
 ## Contract In One Minute
 
 An enterprise wants one SDLC skill, but not one copy-pasted file per repository.
@@ -33,9 +29,9 @@ An enterprise wants one SDLC skill, but not one copy-pasted file per repository.
   <li><strong>Verification gates the output.</strong> Missing required sections fail. Attempts to change final sections fail. The agent receives clean vendored Markdown.</li>
 </ol>
 
-## Who Writes What
+## Composition Model
 
-The MVP composes three Markdown sources:
+Skills as Code composes three Markdown sources:
 
 <CardGrid>
   <Card title="1. Organization">
@@ -76,7 +72,7 @@ The team fills its owned section:
 Use Jira project `PAY`.
 ```
 
-The repository declares the expected composition:
+The repository declares the composition:
 
 ```yaml
 # /repos/payments-api/skills.yaml

@@ -1,9 +1,9 @@
 ---
 title: Enterprise Notes
-description: Enterprise controls that should surround the Markdown MVP.
+description: Enterprise controls for Markdown-first skill composition.
 ---
 
-The Markdown MVP is an adoption path, not a complete enterprise supply-chain system. These controls make the expected workflow reviewable.
+These controls make shared skill updates reviewable and reproducible.
 
 ## Pinning
 
@@ -25,7 +25,7 @@ Mutable refs such as `main` are acceptable for local exploration, but CI should 
 
 ## Provenance Lock
 
-The lock file records what was compiled. It is not an AIBOM; it is the minimum provenance needed to review and reproduce vendored output.
+The lock file records what was compiled so reviewers can reproduce vendored output.
 
 ```yaml
 # /repos/payments-api/skills.lock.yaml
@@ -72,15 +72,3 @@ git diff .claude/skills .skills/reports skills.lock.yaml
 ```
 
 Review the generated skill diff and merge report before committing.
-
-## Scope Boundary
-
-This MVP intentionally avoids:
-
-- Runtime skill resolution.
-- Templates.
-- Kustomize resources or patches.
-- AIBOM/run BOM generation.
-- Build-script orchestration.
-
-Those can be layered later. The MVP should first prove that Markdown source, strict merge rules, and vendored output are adoptable.
