@@ -4,18 +4,18 @@ import Select from '@astrojs/starlight/components/Select.astro';
 
 <starlight-theme-select>
 	<Select
-		icon="moon"
+		icon="sun"
 		label={Astro.locals.t('themeSelect.accessibleLabel')}
 		options={[
-			{ label: Astro.locals.t('themeSelect.dark'), selected: true, value: 'dark' },
-			{ label: Astro.locals.t('themeSelect.light'), selected: false, value: 'light' },
+			{ label: Astro.locals.t('themeSelect.light'), selected: true, value: 'light' },
+			{ label: Astro.locals.t('themeSelect.dark'), selected: false, value: 'dark' },
 			{ label: Astro.locals.t('themeSelect.auto'), selected: false, value: 'auto' },
 		]}
 		width="6.25em"
 	/>
 </starlight-theme-select>
 
-{/* Inlined to avoid FOUC. Uses global scope from `DarkThemeProvider.astro` */}
+{/* Inlined to avoid FOUC. Uses global scope from `LightThemeProvider.astro` */}
 <script is:inline>
 	StarlightThemeProvider.updatePickers();
 </script>
@@ -23,10 +23,10 @@ import Select from '@astrojs/starlight/components/Select.astro';
 <script>
 	type Theme = 'auto' | 'dark' | 'light';
 
-	const storageKey = 'starlight-theme';
+	const storageKey = 'skills-as-code-theme';
 
 	const parseTheme = (theme: unknown): Theme =>
-		theme === 'auto' || theme === 'dark' || theme === 'light' ? theme : 'dark';
+		theme === 'auto' || theme === 'dark' || theme === 'light' ? theme : 'light';
 
 	const loadTheme = (): Theme =>
 		parseTheme(typeof localStorage !== 'undefined' && localStorage.getItem(storageKey));

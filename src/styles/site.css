@@ -1,44 +1,38 @@
 :root {
-  --sl-color-accent-low: #18233a;
-  --sl-color-accent: #93b7ff;
-  --sl-color-accent-high: #dce7ff;
-  --sl-color-white: #f7f8fa;
-  --sl-color-gray-1: #e6e8ec;
-  --sl-color-gray-2: #c5cad3;
-  --sl-color-gray-3: #969eaa;
-  --sl-color-gray-4: #68707c;
-  --sl-color-gray-5: #3b414b;
-  --sl-color-gray-6: #22262d;
-  --sl-color-black: #121418;
-  --sac-panel-bg: #181b20;
-  --sac-panel-bg-soft: #1d2128;
+  --sl-color-accent-low: #3f0000;
+  --sl-color-accent: #ee0000;
+  --sl-color-accent-high: #fbc5c5;
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #f2f2f2;
+  --sl-color-gray-2: #e0e0e0;
+  --sl-color-gray-3: #c7c7c7;
+  --sl-color-gray-4: #a3a3a3;
+  --sl-color-gray-5: #707070;
+  --sl-color-gray-6: #292929;
+  --sl-color-black: #151515;
+  --sac-panel-bg: #1f1f1f;
+  --sac-panel-bg-soft: #292929;
   --sac-shadow: rgba(0, 0, 0, 0.24);
-  --sac-flow-base: #93b7ff;
-  --sac-flow-team: #d7b56d;
-  --sac-flow-check: #89c7a2;
-  --sac-flow-output: #d99797;
+  --sac-story-rule: #ee0000;
 }
 
 :root[data-theme='light'] {
-  --sl-color-accent-low: #e8efff;
-  --sl-color-accent: #345fb4;
-  --sl-color-accent-high: #18315f;
-  --sl-color-white: #15171c;
-  --sl-color-gray-1: #252a32;
-  --sl-color-gray-2: #444b56;
-  --sl-color-gray-3: #737b88;
-  --sl-color-gray-4: #a8b0bb;
-  --sl-color-gray-5: #dce1e8;
-  --sl-color-gray-6: #f0f3f7;
-  --sl-color-gray-7: #fafbfc;
+  --sl-color-accent-low: #fce3e3;
+  --sl-color-accent: #ee0000;
+  --sl-color-accent-high: #5f0000;
+  --sl-color-white: #151515;
+  --sl-color-gray-1: #1f1f1f;
+  --sl-color-gray-2: #383838;
+  --sl-color-gray-3: #4d4d4d;
+  --sl-color-gray-4: #a3a3a3;
+  --sl-color-gray-5: #e0e0e0;
+  --sl-color-gray-6: #f2f2f2;
+  --sl-color-gray-7: #ffffff;
   --sl-color-black: #ffffff;
   --sac-panel-bg: #ffffff;
-  --sac-panel-bg-soft: #f7f8fa;
-  --sac-shadow: rgba(18, 20, 24, 0.08);
-  --sac-flow-base: #345fb4;
-  --sac-flow-team: #8a6218;
-  --sac-flow-check: #2f6f4e;
-  --sac-flow-output: #9a4d4d;
+  --sac-panel-bg-soft: #f2f2f2;
+  --sac-shadow: rgba(21, 21, 21, 0.08);
+  --sac-story-rule: #ee0000;
 }
 
 .site-title {
@@ -76,53 +70,18 @@
   line-height: 1.6;
 }
 
-.hero-flow {
-  display: grid;
-  gap: 0.75rem;
-  width: min(100%, 32rem);
-  margin-inline: auto;
+.contract-steps {
+  border-left: 3px solid var(--sac-story-rule);
+  padding-inline-start: 1.25rem;
 }
 
-.flow-node {
-  border: 1px solid var(--sl-color-gray-5);
-  border-left: 3px solid var(--flow-accent, var(--sl-color-accent));
-  border-radius: 8px;
-  padding: 0.875rem 1rem;
-  background: var(--sac-panel-bg);
-  box-shadow: 0 14px 28px var(--sac-shadow);
+.contract-steps li {
+  margin-block: 0.75rem;
+  padding-inline-start: 0.25rem;
 }
 
-.flow-node span {
-  display: block;
-  margin-bottom: 0.125rem;
-  color: var(--sl-color-gray-3);
-  font-size: var(--sl-text-xs);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.flow-node strong {
-  display: block;
+.contract-steps strong {
   color: var(--sl-color-white);
-  font-size: var(--sl-text-base);
-  line-height: 1.35;
-}
-
-.flow-base {
-  --flow-accent: var(--sac-flow-base);
-}
-
-.flow-team {
-  --flow-accent: var(--sac-flow-team);
-}
-
-.flow-check {
-  --flow-accent: var(--sac-flow-check);
-}
-
-.flow-output {
-  --flow-accent: var(--sac-flow-output);
 }
 
 :root[data-theme='light'] .card {

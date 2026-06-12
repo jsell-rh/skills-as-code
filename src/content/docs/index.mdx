@@ -22,16 +22,16 @@ Skills are Markdown files today. The lowest-friction enterprise pattern should n
   <p><strong>MVP scope:</strong> plain <code>SKILL.md</code> only. No Kustomize, YAML resource schema, templates, AIBOM/run BOM, or build-script model in this version.</p>
 </div>
 
-## One-Minute Story
+## Contract In One Minute
 
-Organization protects the security review. Team fills Jira project `PAY`. Repository adds local context. The agent receives clean `SKILL.md`.
+An enterprise wants one SDLC skill, but not one copy-pasted file per repository.
 
-<div class="hero-flow" aria-hidden="true">
-  <div class="flow-node flow-base"><span>organization</span><strong>base SKILL.md</strong></div>
-  <div class="flow-node flow-team"><span>team</span><strong>fills required sections</strong></div>
-  <div class="flow-node flow-check"><span>repository</span><strong>adds local context</strong></div>
-  <div class="flow-node flow-output"><span>output</span><strong>vendored SKILL.md</strong></div>
-</div>
+<ol class="contract-steps">
+  <li><strong>Organization declares the contract.</strong> <code>Jira Project Context</code> is required. <code>Security Review</code> is final.</li>
+  <li><strong>Team fills the shared team context.</strong> Payments sets the Jira project to <code>PAY</code> and adds team implementation guidance.</li>
+  <li><strong>Repository adds local context.</strong> The repo declares owners, paths, and verification notes in its own <code>SKILL.md</code> source.</li>
+  <li><strong>Verification gates the output.</strong> Missing required sections fail. Attempts to change final sections fail. The agent receives clean vendored Markdown.</li>
+</ol>
 
 ## Who Writes What
 
@@ -42,10 +42,10 @@ The MVP composes three Markdown sources:
     Publishes the base SDLC skill, required sections, and final security review.
   </Card>
   <Card title="2. Team">
-    Supplies the Jira project context and team implementation guidance.
+    Fills the Jira project context and team implementation guidance.
   </Card>
   <Card title="3. Repository">
-    Supplies local ownership and verification context.
+    Adds local ownership and verification context.
   </Card>
   <Card title="Vendored Output">
     The generated file is checked in for the agent to load. Do not edit it directly.

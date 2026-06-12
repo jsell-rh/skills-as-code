@@ -5,12 +5,13 @@ import { Icon } from '@astrojs/starlight/components';
 {/* This is intentionally inlined to avoid FOUC. */}
 <script is:inline>
 	window.StarlightThemeProvider = (() => {
+		const storageKey = 'skills-as-code-theme';
 		const storedTheme =
-			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
-		const theme = storedTheme || 'dark';
-		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+			typeof localStorage !== 'undefined' && localStorage.getItem(storageKey);
+		const theme = storedTheme || 'light';
+		document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
 		return {
-			updatePickers(theme = storedTheme || 'dark') {
+			updatePickers(theme = storedTheme || 'light') {
 				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
 					const select = picker.querySelector('select');
 					if (select) select.value = theme;

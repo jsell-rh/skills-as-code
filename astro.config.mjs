@@ -11,8 +11,8 @@ export default defineConfig({
         'A rigorous enterprise pattern for versioned, verifiable agent skills.',
       customCss: ['./src/styles/site.css'],
       components: {
-        ThemeProvider: './src/components/DarkThemeProvider.astro',
-        ThemeSelect: './src/components/DarkThemeSelect.astro',
+        ThemeProvider: './src/components/LightThemeProvider.astro',
+        ThemeSelect: './src/components/LightThemeSelect.astro',
       },
       sidebar: [
         { label: 'Overview', link: '/' },
