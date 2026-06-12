@@ -1,8 +1,0 @@
-- op: add
-  path: /spec/blocks/repo-context
-  value:
-    order: 50
-    markdown: |
-      ## Repository Context
-
-      Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response. Payment authorization code lives in `src/authz/`.

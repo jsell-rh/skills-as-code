@@ -1,165 +1,127 @@
 ---
-title: Three-Level Example
-description: Organization, team, and repository overlays for a generic SDLC skill.
+title: Markdown MVP Example
+description: Organization, team, and repository skills authored as Markdown and compiled into vendored output.
 ---
 
 import { FileTree } from '@astrojs/starlight/components';
 
-This example shows the minimum structure a team needs.
+This example uses Markdown as the source format. The compiler resolves the organization skill, applies the team and repository sections, verifies the contract, strips annotations, and writes vendored `SKILL.md`.
 
 <FileTree>
 
 - org/
   - skills/
     - sdlc/
-      - kustomization.yaml
-      - skill.yaml
+      - SKILL.md
 - teams/
   - payments/
     - skills/
       - sdlc/
-        - kustomization.yaml
-        - patch.yaml
+        - SKILL.md
 - repos/
   - payments-api/
-    - .agents/
+    - .skills-src/
+      - sdlc/
+        - SKILL.md
+    - .claude/
       - skills/
         - sdlc/
-          - kustomization.yaml
-          - patch.yaml
           - SKILL.md
 
 </FileTree>
 
 ## 1. Organization
 
-The organization owns the generic SDLC skill. It defines the durable prose for Jira intake, implementation, and security review. It also requires downstream overlays to add a Jira project context block.
+The organization owns the base SDLC skill. It marks the Jira project context, team implementation guidance, and repository context as required. It marks the security review as final.
 
-```yaml
-# /org/skills/sdlc/skill.yaml
-apiVersion: skills.agent.dev/v1alpha1
-kind: Skill
-metadata:
-  name: enterprise-sdlc
-spec:
-  description: Enterprise SDLC skill for Jira-driven code changes.
-  target: SKILL.md
-  contract:
-    requiredBlocks:
-      - jira-project-context
-      - team-implementation-guidelines
-      - repo-context
-    lockedBlocks:
-      - security-review
-    allowedPatchPaths:
-      - /spec/blocks/jira-project-context
-      - /spec/blocks/team-implementation-guidelines
-      - /spec/blocks/repo-context
-  blocks:
-    jira-intake:
-      order: 10
-      markdown: |
-        ## Read The Jira Issue
+```md
+# /org/skills/sdlc/SKILL.md
+---
+name: enterprise-sdlc
+description: Enterprise SDLC skill for Jira-driven code changes.
+---
 
-        Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
-    implementation-scaffold:
-      order: 30
-      markdown: |
-        ## Implement
+# Enterprise SDLC
 
-        Use the issue acceptance criteria as the source of truth. Keep changes narrow.
-    security-review:
-      order: 90
-      markdown: |
-        ## Security Review
+## Read The Jira Issue
 
-        Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.
+Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
+
+## Jira Project Context <!-- @required -->
+
+<!-- Team must declare the Jira project key and any project-specific issue lookup rules. -->
+
+## Implement
+
+Use the issue acceptance criteria as the source of truth. Keep changes narrow.
+
+## Team Implementation Guidelines <!-- @required -->
+
+<!-- Team must add engineering guidance that applies across its repositories. -->
+
+## Repository Context <!-- @required -->
+
+<!-- Repository must add local ownership and verification guidance. -->
+
+## Security Review <!-- @final -->
+
+Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.
 ```
 
 The organization contract says:
 
-- `jira-project-context` must be added.
-- `team-implementation-guidelines` must be added.
-- `repo-context` must be added.
-- `security-review` cannot be patched downstream.
+- `Jira Project Context` must be supplied before final output.
+- `Team Implementation Guidelines` must be supplied before final output.
+- `Repository Context` must be supplied before final output.
+- `Security Review` cannot be replaced downstream.
 
 ## 2. Team
 
-The payments team adds the required Jira project context and team implementation guidance.
+The payments team supplies the Jira project context and team implementation guidance. The heading text is the section identity.
 
-```yaml
-# /teams/payments/skills/sdlc/kustomization.yaml
-resources:
-  - ../../../org/skills/sdlc
+```md
+# /teams/payments/skills/sdlc/SKILL.md
+---
+name: enterprise-sdlc
+description: Payments SDLC guidance.
+---
 
-patches:
-  - path: patch.yaml
-    target:
-      group: skills.agent.dev
-      version: v1alpha1
-      kind: Skill
-      name: enterprise-sdlc
+## Jira Project Context
+
+Use Jira project `PAY`.
+
+## Team Implementation Guidelines
+
+Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
 ```
 
-```yaml
-# /teams/payments/skills/sdlc/patch.yaml
-- op: add
-  path: /spec/blocks/jira-project-context
-  value:
-    order: 20
-    markdown: |
-      ## Jira Project Context
-
-      Use Jira project `PAY`.
-- op: add
-  path: /spec/blocks/team-implementation-guidelines
-  value:
-    order: 40
-    markdown: |
-      ## Payments Team Guidelines
-
-      Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
-```
+At this point the skill is still incomplete because the repository context is not present.
 
 ## 3. Repository
 
-The repository consumes the team overlay and adds local context.
-
-```yaml
-# /repos/payments-api/.agents/skills/sdlc/kustomization.yaml
-resources:
-  - ../../../../../teams/payments/skills/sdlc
-
-patches:
-  - path: patch.yaml
-    target:
-      group: skills.agent.dev
-      version: v1alpha1
-      kind: Skill
-      name: enterprise-sdlc
-```
-
-```yaml
-# /repos/payments-api/.agents/skills/sdlc/patch.yaml
-- op: add
-  path: /spec/blocks/repo-context
-  value:
-    order: 50
-    markdown: |
-      ## Repository Context
-
-      Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response. Payment authorization code lives in `src/authz/`.
-```
-
-## Compiled Skill
-
-The CLI resolves the overlays, verifies the contract, sorts blocks by `order`, and writes the skill the agent will load.
+The repository supplies local operating context.
 
 ```md
-# /repos/payments-api/.agents/skills/sdlc/SKILL.md
+# /repos/payments-api/.skills-src/sdlc/SKILL.md
 ---
 name: enterprise-sdlc
-description: Enterprise SDLC skill for Jira-driven code changes.
+description: Payments API SDLC guidance.
+---
+
+## Repository Context
+
+Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response. Payment authorization code lives in `src/authz/`.
+```
+
+## Vendored Output
+
+The compiler strips annotations and comments, preserves organization-owned final prose, and writes clean Markdown for the agent.
+
+```md
+# /repos/payments-api/.claude/skills/sdlc/SKILL.md
+---
+name: enterprise-sdlc
+description: Payments API SDLC guidance.
 ---
 
 # Enterprise SDLC
@@ -176,7 +138,7 @@ Use Jira project `PAY`.
 
 Use the issue acceptance criteria as the source of truth. Keep changes narrow.
 
-## Payments Team Guidelines
+## Team Implementation Guidelines
 
 Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
 
@@ -189,4 +151,4 @@ Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidan
 Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.
 ```
 
-The important point is not the compiler command. The important point is the contract: team and repository overlays can add required local guidance, but they cannot change the organization-owned security review.
+The important point is the adoption curve: a team starts with Markdown, not a new resource format. The rigor comes from compiler checks around required sections, final sections, duplicate headings, and the generated merge report.

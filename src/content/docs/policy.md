@@ -1,67 +1,56 @@
 ---
 title: Policy Model
-description: The minimum policy semantics for organization, team, and repository overlays.
+description: The minimum policy semantics for Markdown-first skill contracts.
 ---
 
-The contract is the enforcement boundary.
+The contract is the enforcement boundary. The agent reads Markdown; the compiler enforces the contract before Markdown reaches the agent.
 
-It answers four questions:
+## Annotations
 
-- What must downstream overlays provide?
-- What may downstream overlays patch?
-- What must exist before compilation?
-- What is owned by the organization and cannot be changed downstream?
+The MVP uses two section annotations:
 
-## Contract
+```md
+# /org/skills/sdlc/SKILL.md
+## Jira Project Context <!-- @required -->
 
-```yaml
-# /org/skills/sdlc/skill.yaml
-spec:
-  contract:
-    requiredBlocks:
-      - jira-project-context
-      - team-implementation-guidelines
-      - repo-context
-    lockedBlocks:
-      - security-review
-    allowedPatchPaths:
-      - /spec/blocks/jira-project-context
-      - /spec/blocks/team-implementation-guidelines
-      - /spec/blocks/repo-context
+<!-- Team must declare the Jira project key. -->
+
+## Security Review <!-- @final -->
+
+Review authentication, authorization, injection, secret exposure, and sensitive data handling risks.
 ```
 
-## Required Blocks
+## Required Sections
 
-`requiredBlocks` force downstream overlays to add the content that only they can know.
+`<!-- @required -->` marks a section that must be supplied downstream before final output.
 
-In the SDLC example:
+Required sections are how an organization creates abstract-base behavior without sentinel values or template syntax. The base skill remains readable Markdown, but the compiler refuses to emit final output until each required section has concrete prose.
 
-- The team adds Jira project context.
-- The team adds implementation guidance.
-- The repository adds local ownership and verification context.
+## Final Sections
 
-There is no sentinel value and no template expression. Jira project selection is ordinary prose in an addressable block.
+`<!-- @final -->` marks organization-owned prose that downstream sources cannot replace.
 
-## Locked Blocks
+The security review block is final because teams and repositories must inherit it unchanged. If a downstream source includes `## Security Review`, verification fails.
 
-`lockedBlocks` identify organization-owned prose.
+## Heading Identity
 
-The security review block is locked because teams and repositories must inherit it unchanged. A downstream overlay that tries to patch `/spec/blocks/security-review` should fail verification.
+The MVP uses normalized heading text as section identity. This keeps authoring friction low: no block IDs, no schema file, no path syntax.
 
-## Allowed Patch Paths
+The compiler should be strict:
 
-`allowedPatchPaths` is the allowlist for downstream change.
+- Strip annotations before comparing headings.
+- Fail on duplicate headings in a single source.
+- Require exact heading matches for required and final sections.
+- Report unmatched downstream headings as appended sections.
+- Emit a merge report showing every section kept, replaced, supplied, appended, or rejected.
 
-Everything absent from the list is denied by default.
+## Clean Output
 
-```yaml
-# /repos/payments-api/.agents/skills/sdlc/invalid-security-review-patch.yaml
-- op: replace
-  path: /spec/blocks/security-review/markdown
-  value: |
-    ## Security Review
+Annotations are compile-time metadata. The vendored skill should not contain `@required`, `@final`, or instructional placeholder comments.
 
-    Skip security review for small changes.
+```md
+# /repos/payments-api/.claude/skills/sdlc/SKILL.md
+## Security Review
+
+Review authentication, authorization, injection, secret exposure, and sensitive data handling risks.
 ```
-
-That patch should fail because `security-review` is locked and the path is not allowed.

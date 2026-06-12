@@ -1,21 +1,21 @@
 # Skills as Code
 
-Declarative overlays for prose-based agent skills.
+Markdown-first contracts for prose-based agent skills.
 
-Skills as Code is a documentation and specification draft for managing today’s `SKILL.md` prose across organization, team, and repository levels. It proposes a simple path:
+Skills as Code is a documentation and specification draft for managing today's `SKILL.md` prose across organization, team, and repository levels. It proposes a low-friction path:
 
 ```text
 # /README.md
-organization base -> team overlay -> repository overlay -> compiled SKILL.md
+base SKILL.md -> team SKILL.md -> repository SKILL.md -> vendored SKILL.md
 ```
 
-The pattern keeps compatibility with current flat skill formats while adding the missing enterprise layers: inheritance, review boundaries, locked organization-owned prose, and deterministic output.
+The pattern keeps compatibility with current flat skill formats while adding required sections, final organization-owned sections, clean vendored output, and deterministic review.
 
 ## What Is Included
 
 - Starlight documentation site in `src/content/docs/`.
-- Three-level Kustomize-compatible example in `examples/three-level/`.
-- Organization SDLC skill, payments team overlay, repository overlay, and compiled skill sample.
+- Markdown-first example in `examples/markdown-mvp/`.
+- Organization SDLC skill, payments team skill, repository skill, and vendored output sample.
 
 ## Commands
 
@@ -23,7 +23,6 @@ The pattern keeps compatibility with current flat skill formats while adding the
 # /scripts/verify-local.sh
 pnpm install --ignore-scripts
 pnpm run build
-kustomize build examples/three-level/repos/payments-api/.agents/skills/sdlc
 ```
 
 ## Development
@@ -35,4 +34,4 @@ pnpm run dev
 
 ## Project Status
 
-This is a concept draft, not a finished compiler or standard. The docs assume a CLI exists to resolve overlays, verify contracts, and emit `SKILL.md`.
+This is a concept draft, not a finished compiler or standard. The docs assume a CLI exists to resolve Markdown sources, verify contracts, and emit clean `SKILL.md`.

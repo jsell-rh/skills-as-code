@@ -12,12 +12,12 @@ export default defineConfig({
       customCss: ['./src/styles/site.css'],
       sidebar: [
         { label: 'Overview', link: '/' },
-        { label: 'Three-Level Example', slug: 'example' },
+        { label: 'Markdown MVP Example', slug: 'example' },
         { label: 'Policy Model', slug: 'policy' },
         {
           label: 'Reference',
           items: [
-            { label: 'Resource Shape', slug: 'reference/schema' },
+            { label: 'Markdown Contract', slug: 'reference/schema' },
             { label: 'Terms', slug: 'reference/terms' },
           ],
         },

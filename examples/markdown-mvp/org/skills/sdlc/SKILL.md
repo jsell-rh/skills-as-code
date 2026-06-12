@@ -9,22 +9,22 @@ description: Enterprise SDLC skill for Jira-driven code changes.
 
 Use the Jira skill to read the assigned issue. The Jira project is declared in the Jira Project Context section.
 
-## Jira Project Context
+## Jira Project Context <!-- @required -->
 
-Use Jira project `PAY`.
+<!-- Team must declare the Jira project key and any project-specific issue lookup rules. -->
 
 ## Implement
 
 Use the issue acceptance criteria as the source of truth. Keep changes narrow.
 
-## Payments Team Guidelines
+## Team Implementation Guidelines <!-- @required -->
 
-Prefer ledger-safe changes, preserve audit trails, and include migration notes for schema changes.
+<!-- Team must add engineering guidance that applies across its repositories. -->
 
-## Repository Context
+## Repository Context <!-- @required -->
 
-Use this repository's CONTRIBUTING.md, CODEOWNERS, and local verification guidance before final response. Payment authorization code lives in `src/authz/`.
+<!-- Repository must add local ownership and verification guidance. -->
 
-## Security Review
+## Security Review <!-- @final -->
 
 Review the diff for authentication, authorization, injection, secret exposure, and sensitive data handling risks.
